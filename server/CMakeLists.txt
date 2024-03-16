@@ -1,0 +1,2 @@
+add_executable(trygrpc_server GreeterServer.cpp)
+target_link_libraries(trygrpc_server protolib)
