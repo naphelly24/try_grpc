@@ -1,2 +1,3 @@
+project(tryrpc_client)
 add_executable(trygrpc_client GreeterClient.cpp)
 target_link_libraries(trygrpc_client protolib)
