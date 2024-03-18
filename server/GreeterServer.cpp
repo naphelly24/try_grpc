@@ -10,6 +10,13 @@ using helloworld::HelloReply;
 using helloworld::HelloRequest;
 
 class GreetServiceImpl final : public Greeter::Service {
+ public:
+  ~GreetServiceImpl() {
+    if (server) {
+      server->Shutdown();
+    }
+  }
+
   grpc::Status SayHello(grpc::ServerContext* context,
                         const HelloRequest* request,
                         HelloReply* reply) override {
@@ -65,19 +72,26 @@ class GreetServiceImpl final : public Greeter::Service {
     }
     return grpc::Status::OK;
   }
+
+  void Run() {
+    std::cout << "initiating server" << std::endl;
+    GreetServiceImpl service;
+    grpc::ServerBuilder builder;
+    builder.AddListeningPort("0.0.0.0:9999", grpc::InsecureServerCredentials());
+    builder.RegisterService(&service);
+
+    server = builder.BuildAndStart();
+    std::cout << "Server listening on 0.0.0.0:9999" << std::endl;
+
+    server->Wait();
+  }
+
+ private:
+  std::unique_ptr<grpc::Server> server;
 };
 
 int main(int, char**) {
-  std::cout << "initiating server" << std::endl;
   GreetServiceImpl service;
-  grpc::ServerBuilder builder;
-  builder.AddListeningPort("0.0.0.0:9999", grpc::InsecureServerCredentials());
-  builder.RegisterService(&service);
-
-  std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on 0.0.0.0:9999" << std::endl;
-
-  server->Wait();
-
+  service.Run();
   return 0;
 }
