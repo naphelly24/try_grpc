@@ -9,11 +9,11 @@ using helloworld::Greeter;
 using helloworld::HelloReply;
 using helloworld::HelloRequest;
 
-class GreetServiceImpl final : public Greeter::Service {
+class GreetServer final : public Greeter::Service {
  public:
-  ~GreetServiceImpl() {
-    if (server) {
-      server->Shutdown();
+  ~GreetServer() {
+    if (server_) {
+      server_->Shutdown();
     }
   }
 
@@ -75,23 +75,23 @@ class GreetServiceImpl final : public Greeter::Service {
 
   void Run() {
     std::cout << "initiating server" << std::endl;
-    GreetServiceImpl service;
+    GreetServer service;
     grpc::ServerBuilder builder;
     builder.AddListeningPort("0.0.0.0:9999", grpc::InsecureServerCredentials());
     builder.RegisterService(&service);
 
-    server = builder.BuildAndStart();
+    server_ = builder.BuildAndStart();
     std::cout << "Server listening on 0.0.0.0:9999" << std::endl;
 
-    server->Wait();
+    server_->Wait();
   }
 
  private:
-  std::unique_ptr<grpc::Server> server;
+  std::unique_ptr<grpc::Server> server_;
 };
 
 int main(int, char**) {
-  GreetServiceImpl service;
+  GreetServer service;
   service.Run();
   return 0;
 }

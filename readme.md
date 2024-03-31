@@ -43,6 +43,12 @@ cd server
 # bi-direction stream mode
 ./trygrpc_client 4
 ```
+### async server
+```bash
+cd asyncserver
+# will startup server, listen on port 50051
+./trygrpc_asyncserver
+```
 
 # Sample launch.json for vscode
 ```json
