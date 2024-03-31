@@ -1,6 +1,7 @@
 #include <grpcpp/grpcpp.h>
 
 #include <iostream>
+#include <thread>
 
 #include "protos/hello.grpc.pb.h"
 #include "protos/hello.pb.h"
@@ -68,6 +69,7 @@ class AsyncGreeterServer final : public Greeter::Service {
         std::string prefix("Hello ");
         reply_.set_message(prefix + request_.name());
         status_ = FINISH;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         responder_.Finish(reply_, grpc::Status::OK, this);
       } else {
         GPR_ASSERT(status_ == FINISH);

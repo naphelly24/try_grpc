@@ -1,0 +1,3 @@
+project(tryrpc_asyncclient)
+add_executable(tryrpc_asyncclient AsyncGreeterClient.cpp)
+target_link_libraries(tryrpc_asyncclient protolib)
